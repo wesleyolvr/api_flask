@@ -30,22 +30,20 @@ def get_10_hits_from_artist():
         
         artista_no_cache = artista_esta_no_cache(search_term)
         if artista_no_cache:
-            print('artista no cache')
+        
             return return_response(artista_no_cache)
         artista_no_banco = artista_esta_no_banco(search_term)
         if artista_no_banco:
-            print('artista no banco')
+        
             return return_response(artista_no_banco)
         
         #pesquisar na API
         items_response = search_api(search_term)
-        print('pesquisar na API')
+        
         aws_controller.load_items(items_response)
-        print('salvo no banco')
+        
         cache.set_item(search_term, json.dumps(items_response))
-        print('salvo no cache')
-        print(items_response)
-        print(type(items_response))
+        
         return return_response(items_response)
     
     
