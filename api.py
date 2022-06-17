@@ -4,15 +4,13 @@ import json
 import requests
 from dotenv import dotenv_values
 from flask import Flask, jsonify, make_response, request
-import aws_controller
+import bd_controller
 
 config = dotenv_values(".env")
 
 client_access_token = config['CLIENT_ACCESS_TOKEN']
 
 app = Flask(__name__)
-
-
 
 @app.route("/hits", methods=['GET'])
 def get_10_hits_from_artist():
@@ -23,7 +21,7 @@ def get_10_hits_from_artist():
         if CACHE == 'false':
             cache.delete_item(search_term)
             response_items = search_api(search_term)
-            aws_controller.load_items(response_items)
+            bd_controller.load_items(response_items)
             return return_response(response_items)
         
         
@@ -40,7 +38,7 @@ def get_10_hits_from_artist():
         #pesquisar na API
         items_response = search_api(search_term)
         
-        aws_controller.load_items(items_response)
+        bd_controller.load_items(items_response)
         
         cache.set_item(search_term, json.dumps(items_response))
         
@@ -86,4 +84,4 @@ def artista_esta_no_cache(artist_name):
 
 
 def artista_esta_no_banco(artist_name):
-    return aws_controller.get_item(artist_name)
+    return bd_controller.get_item(artist_name)
