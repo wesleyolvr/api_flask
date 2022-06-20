@@ -23,6 +23,5 @@ def get_item(name):
 
 def load_items(items):
     table = dynamodb.Table(TableName)
-    print(items)
     return table.put_item(Item=items)
 

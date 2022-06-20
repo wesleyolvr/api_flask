@@ -2,15 +2,13 @@ import json
 import uuid
 
 import requests
-from dotenv import dotenv_values
+from projetos.core.helper import client_access_token
 from flask import Flask, jsonify, make_response, request
 
 
 from projetos.core import cache,bd_controller
 
-config = dotenv_values(".env")
 
-client_access_token = config['CLIENT_ACCESS_TOKEN']
 genius_search_url = "http://api.genius.com/search?q={}&access_token={}"
 app = Flask(__name__)
 
@@ -44,7 +42,6 @@ def get_10_hits_from_artist():
         
         return buid_response(items_response)
     
-    
     except Exception as e:
         raise e
     
@@ -53,7 +50,7 @@ def get_10_hits_from_artist():
     
 def search_api(search_term):
     try:
-        response = requests.get(genius_search_url.formart(search_term))
+        response = requests.get(genius_search_url.format(search_term,client_access_token))
         if response.status_code == 200:
             id_transacao = str(uuid.uuid4())
             json_data = response.json()
